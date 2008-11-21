@@ -1,0 +1,170 @@
+/* CSS Document Created by Girish Gandhi as on 05 June 2008 */
+Body{
+	margin:0px;
+	border:0px;
+	padding:0px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size:100%;
+}
+.HPcanvas{
+	background-image:url(../images/HPcanvas.jpg);
+	background-position:left top;
+	background-repeat:no-repeat;
+	background-attachment:scroll
+}
+.ContentCanvas{
+	background-image:url(../images/canvas2.jpg);
+	background-position:left top;
+	background-repeat:no-repeat;
+	background-attachment:scroll
+}
+#hpDiv1{
+	Left:306px;
+	Top:136px;
+	border:0px solid #FFFFFF;
+	position:relative;
+	width:600px;
+	height:400px;
+}
+
+#hpDiv1 .hpHeading{
+	background-color:#99ff33;
+	font-size:90%;
+	font-weight:bold;
+	padding-bottom:6px;
+	padding-top:6px;
+	padding-left:10px;
+	border:0px solid #cccc99;
+}
+#hpDiv1 .hpTxt{
+	font-size:75%;
+	padding-left:40px;
+	padding-top:20px;
+	padding-right:10px;
+	padding-bottom:24px;
+	line-height:140%;
+}
+#hpDiv1 .btnTxt{
+	font-size:75%;
+}
+
+
+#hpDiv1 .lgBgColor{
+	background-color:#96caf9;
+}
+#hpDiv1 .lgHeading{
+	font-size:90%;
+	font-weight:bold;
+	padding-left:6px;
+}
+
+/****************/
+#rgDiv1{
+	Left:306px;
+	Top:136px;
+	position:relative;
+	width:600px;
+	height:400px;
+}
+#ContentDiv1{
+	Left:35px;
+	Top:74px;
+	position:relative;
+	width:959px;
+}
+
+
+/***********************/
+.pgHeading{
+	background-color:#99ff33;
+	font-size:90%;
+	font-weight:bold;
+	padding-bottom:6px;
+	padding-top:6px;
+	padding-left:10px;
+	border:0px solid #cccc99;
+}
+.pgHeading A, .pgHeading A:visited{text-decoration:none;color:#000000;}
+.pgHeading A:hover{text-decoration:none;color:#336699;}
+.pgSubHeading1{
+	background-color:#b1e6a9;
+	font-size:85%;
+	font-style:bold;
+	padding-bottom:3px;
+	padding-top:3px;
+	padding-left:10px;
+	border:0px solid #cccc99;
+	border-top:none;
+}
+.pgSubHeading2{
+	font-size:90%;
+	font-weight:bold;
+	padding-bottom:3px;
+	padding-top:36px;
+	padding-left:10px;
+}
+.clsNormalTxt{
+	font-size:75%;
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:2px;
+	padding-right:2px;
+}
+.lftLinks{
+    margin: 3px;
+	font-size:80%;
+	padding-bottom:3px;
+	padding-top:3px;
+	padding-left:3px;
+	padding-right:3px;
+	background-color:#6699cc;
+}
+.lftLinks A, .lftLinks A:visited{text-decoration:none;color:#000000;}
+.lftLinks A:hover{text-decoration:none;color:#336699;}
+.secHead1{
+	font-size:100%;
+	padding-bottom:3px;
+	padding-top:3px;
+	padding-left:3px;
+	padding-right:3px;
+	background-color:#336699;
+	color:#FFFFFF
+}
+.clsProfileTxt{
+	font-size:80%;
+	padding-left:10px;
+	padding-top:0px;
+	padding-right:20px;
+	padding-bottom:8px;
+	line-height:160%;
+}
+.clsMyFriendLnk{font-size:80%}
+.clsMyFriendLnk A,.clsMyFriendLnk A:visited{text-decoration:none;color:#000000}
+.clsMyFriendLnk A:hover{color:#336699}
+
+
+
+.bdrAll{border:1px solid #bfddee}
+.bdrLftLink{border:1px solid #9ecbad}
+.ht4{line-height:4px;height:4px;}
+.pdRt7{padding-right:7px}
+.btnWidth120{width:120px;}
+.btnWidth100{width:100px;}
+.btnWidth60{width:60px;}
+.imgBdr{border:1px solid #6699cc}
+
+.flRgt{
+	float:right;
+	padding-right:10px;
+	font-size:75%;
+	font-weight:bold;
+}
+.flLft{float:left}
+
+.flCenter{float:left;
+padding-left:350px;
+font-size:90%;
+font-weight:normal;	
+}
+/**** HTML SELECTORS ****/
+SELECT, TEXTAREA, INPUT{font-size:75%;font-family:Arial, Helvetica, sans-serif}

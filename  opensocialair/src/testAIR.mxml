@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#FFFFFF, #E1E1E1]" width="315" cornerRadius="10" backgroundImage="@Embed(source='images/back.jpg')" backgroundAlpha="0.6" creationComplete="init()">
+<mx:Script>
+	<![CDATA[
+		import mx.collections.ArrayCollection;
+		import mx.rpc.http.HTTPService;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.controls.Alert;
+		import mx.effects.Resize;
+		[Bindable]	
+		public var publicName:String;
+		[Bindable]	
+		public var VId:String;
+		[Bindable]
+		public var dob:String
+		[Bindable]
+		public var aboutMe:String
+		[Bindable]
+		public var friendsList:ArrayCollection
+		[Bindable]
+		public var gadgets:ArrayCollection
+		[Bindable]
+		public var gadgetDict:Dictionary=new Dictionary()
+		
+		public var gadgetUrl:String;
+		public var shindigUrl:String;
+		public var loginUrl:String;
+		
+		
+		public var gadgetsNameArray:ArrayCollection=new ArrayCollection()
+		
+		
+		public function changeState():void			{
+				var resize:Resize=new Resize();
+				this.currentState='loggedIn';
+				resize.heightTo=650;
+				resize.widthTo=700;
+				resize.target=this
+				resize.play(null);
+			html.location = "profile.php.htm";
+			html.addEventListener(Event.HTML_DOM_INITIALIZE, domInitialized);
+		}
+		public function init():void{
+			var tempService:HTTPService=new HTTPService();
+			tempService.url='settings.xml';
+			tempService.addEventListener(ResultEvent.RESULT,resultInit);
+			tempService.addEventListener(FaultEvent.FAULT,faultInit);
+			tempService.send();
+		}
+		public function resultInit(event:ResultEvent):void{
+			shindigUrl=event.result.root.shindigurl;
+			loginUrl=event.result.root.loginurl;
+		}
+		public function faultInit(event:FaultEvent):void{
+			Alert.show('Error in initializing :Missing settings file');
+		}
+		public function createRequest():void{
+			var userNameValid:Boolean=isNull(userName)
+			var passwordValid:Boolean=isNull(password)
+			if (userNameValid && passwordValid){
+			
+			var httpreq:HTTPService=new HTTPService();
+			httpreq.url=loginUrl;
+			httpreq.method='post';
+			httpreq.contentType="application/x-www-form-urlencoded";
+			httpreq.send(loginCredentials);
+			httpreq.addEventListener(ResultEvent.RESULT,afterLogin);
+			httpreq.addEventListener(FaultEvent.FAULT,invalidLogin);
+			}
+		}
+		
+		
+		public function afterLogin(event:ResultEvent):void{
+			
+			VId=event.result.root.id;
+			publicName=event.result.root.name;
+			dob=event.result.root.age;
+			aboutMe=event.result.root.aboutme;
+			friendsList=ArrayCollection(event.result.root.friends.friendname)
+			gadgets=ArrayCollection(event.result.root.gadgets.gadget)
+			//Alert.show(event.result.root.gadgets.gadget[0].gadgetName)
+			gadgetsNameArray.addItem('Select Gadget');
+			for(var count in gadgets){
+				gadgetDict[gadgets[count].gadgetName]=gadgets[count].gadgetUrl
+				gadgetsNameArray.addItem([gadgets[count].gadgetName]);
+			}
+			
+		//Alert.show(event.message.toString())
+//		Alert.show(age);
+
+			changeState();
+		}
+		
+		public function invalidLogin(event:FaultEvent):void{
+		Alert.show('Invalid Login')	
+		}
+		
+		public function renderGadget():void{
+			if(gadgetCombo.selectedItem.toString() == 'Select Gadget'){
+				
+				return
+			}
+			gadgetUrl=gadgetDict[gadgetCombo.selectedItem.toString()]
+			showCanvasView();
+			
+		}
+		
+		 private var handleGadgetInModeFunction:Function = calledFromJSHandler;
+		 
+             private function domInitialized(event:Event):void{
+                  html.htmlLoader.window.handleGadgetInModeFunction = handleGadgetInModeFunction;
+                  
+              }
+              private function calledFromJSHandler():void {
+                  mx.controls.Alert.show("ActionScript called from JavaScript", "Alert");
+              }
+              
+              /*private function showProfileView():void {
+              	html.width=190
+              	html.htmlLoader.window
+                  //html.htmlLoader.window.handleGadgetInMode('profile',urlInp.text,viewerId.text,ownerId.text);
+                  html.htmlLoader.window.handleGadgetInMode('profile','http://172.19.102.86/ListFriends.xml','71','71');
+              }*/
+              
+              private function showCanvasView():void{
+              	html.width=400
+              	html.htmlLoader.window.handleGadgetInMode('canvas',gadgetUrl,VId,VId,shindigUrl);
+              	//html.htmlLoader.window.handleGadgetInMode('canvas','http://172.19.102.86/ListFriends.xml','71','71');
+              	
+              }
+              public function logOut():void{
+              	userName.text=""
+              	password.text=""
+              	var resize:Resize=new Resize();
+				this.currentState='';
+				resize.heightTo=400;
+				resize.widthTo=315;
+				resize.target=this
+				resize.play(null);
+				gadgetsNameArray.removeAll();
+				gadgetDict = new Dictionary();
+              }
+              public function isNull(fieldName:Object):Boolean{
+	//Trimming function 
+				var temp:String=fieldName.text;
+				var pattern:RegExp = /^[ \t]+|[ \t]+$/;
+				
+				while(true){
+					if(temp.search(pattern)==-1){
+						break;
+					}
+					if(temp.search(pattern)==0){                    //This will remove all the white spaces from the begining
+						temp=temp.substr(1,temp.length);
+						continue;
+					}else{
+						temp=temp.substr(0,temp.search(pattern));
+						break;
+					}
+				}
+				
+				//Ends here
+				if(temp==""){
+					fieldName.errorString="Field is required";
+					var cssObj:CSSStyleDeclaration;
+                    cssObj = StyleManager.getStyleDeclaration(".errorTip");
+                    cssObj.setStyle("borderColor", "#e66607");
+                    fieldName.setStyle("errorColor", "#e66607");
+					return false;
+				}
+				return true;
+}
+
+	]]>
+</mx:Script>
+
+<mx:Model id="loginCredentials">
+<root>
+	<user_name>{userName.text}</user_name>
+	<password>{password.text}</password>
+	</root>
+</mx:Model>
+	<mx:states>
+		<mx:State name="loggedIn">
+			<mx:SetProperty target="{label1}" name="text" value="Welcome!"/>
+			<mx:SetProperty target="{label1}" name="width" value="93"/>
+			<mx:SetStyle target="{applicationcontrolbar1}" name="paddingLeft" value="10"/>
+			<mx:RemoveChild target="{form1}"/>
+			<mx:RemoveChild target="{button1}"/>
+			<mx:SetProperty target="{applicationcontrolbar1}" name="width" value="578"/>
+			<mx:SetProperty name="width" value="600"/>
+			<mx:AddChild relativeTo="{applicationcontrolbar1}" position="lastChild">
+				<mx:Label text="{publicName}" width="349" fontSize="14" color="#FDFDFD"/>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Label x="14" y="71" text="About Me:" color="#000000" fontWeight="bold" fontSize="12"/>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Label x="14" y="141" text="Age" color="#000000" fontSize="12" fontWeight="bold"/>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Label x="121" y="141" text="{dob}" width="262" fontSize="12" color="#000000"/>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:List x="466" y="210" height="277" dataProvider="{friendsList}" width="219"></mx:List>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Label x="465" y="184" text="Friends:" color="#000000" fontWeight="bold" fontSize="12"/>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:ComboBox x="121" y="184" dataProvider="{gadgetsNameArray}" change="renderGadget()" id="gadgetCombo"></mx:ComboBox>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Label x="14" y="186" text="Select Gadget:" fontSize="12" color="#000000" fontWeight="bold"/>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Canvas x="14" y="214" width="400" height="400">
+				<mx:HTML id="html" liveScrolling="true" horizontalScrollPolicy="off" backgroundAlpha="1.0" verticalScrollPolicy="on"/>
+				</mx:Canvas>
+			</mx:AddChild>
+			<mx:AddChild position="lastChild">
+				<mx:Text x="121" y="71" text="{aboutMe}" width="467" height="56" />
+			</mx:AddChild>
+			<mx:SetStyle name="backgroundGradientColors" value="[#FFFFFF, #E1E1E1]"/>
+			<mx:SetStyle name="backgroundGradientAlphas" value="[1.0, 1.0]"/>
+			<mx:SetProperty target="{applicationcontrolbar1}" name="y" value="4"/>
+			<mx:SetStyle name="backgroundImage" value="@Embed(source='images/back2.jpg')"/>
+			<mx:AddChild relativeTo="{applicationcontrolbar1}" position="lastChild">
+				<mx:LinkButton label="Log-Out" click="logOut()"/>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	<mx:ApplicationControlBar x="10" y="10" width="293" height="42" paddingLeft="50" id="applicationcontrolbar1" fillAlphas="[1.0, 1.0]" fillColors="[#E66607, #FC8B37]">
+		<mx:Label text="Gadget Login Panel" width="184" fontSize="16" fontWeight="bold" id="label1" color="#FFFFFF"/>
+	</mx:ApplicationControlBar>
+	<mx:Form x="21" y="74" id="form1">
+		<mx:FormItem label="UserName">
+			<mx:TextInput id="userName" errorColor="#e66607" />
+		</mx:FormItem>
+		<mx:FormItem label="Password">
+			<mx:TextInput id="password"  displayAsPassword="true" errorColor="#e66607" />
+		</mx:FormItem>
+	</mx:Form>
+	<mx:Button x="120" y="165" label="Login" click="createRequest()" id="button1"/>
+</mx:WindowedApplication>

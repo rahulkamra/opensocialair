@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Google</title>
+<link href="profile.php_files/GoogleClasses.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="profile.php_files/gadgets.css">
+<script type="text/javascript" src="profile.php_files/rpc.js"></script>
+<script type="text/javascript" src="profile.php_files/cookies.js"></script>
+<script type="text/javascript" src="profile.php_files/util.js"></script>
+<script type="text/javascript" src="profile.php_files/gadgets.js"></script>
+<script type="text/javascript" src="profile.php_files/DemoAppGadget.js"></script>
+<script type="text/javascript" src="profile.php_files/cookiebaseduserprefstore.js"></script><script type="text/javascript">
+var gServerBaseURL = '';
+var gProfileGadget = null;
+var gCanvasGadget = null;
+var gChromeIds = [ "gadget-profile-chrome", "gadget-canvas-chrome" ];
+//var gOwnerId = 71;
+//var gViewerId =  125;
+
+function setgOwnerId(ownerid){
+gOwnerId=ownerid
+}
+function generateSecureToken( gadget, mode,gViewerId,gOwnerId ) {
+  // TODO: Use a less silly mechanism of mapping a gadget URL to an appid
+  var appId = 0;
+  var appIdGeneratorUrl = gadget.specUrl + "?mode=" + mode;
+  for (var i = 0; i < appIdGeneratorUrl.length; i++) {
+    appId += appIdGeneratorUrl.charCodeAt(i);
+  }
+  
+  var fields = [gOwnerId, gViewerId, appId, "shindig", gadget.specUrl, "0"];
+  for (var i = 0; i < fields.length; i++) {
+    // escape each field individually, for metachars in URL
+    fields[i] = escape(fields[i]);
+  }
+  return fields.join(":");
+}
+</script>
+
+<script type="text/javascript">
+  
+function handleNewProfileGadget( gadgetUrl,shindigUrl ) {
+  gProfileGadget = gadgets.container.createGadget( {'specUrl': gadgetUrl} );
+  gProfileGadget.setServerBase(shindigUrl);
+  gProfileGadget.width=170;
+  gadgets.container.addGadget( gProfileGadget );
+  gadgets.container.layoutManager.setGadgetChromeIds( gChromeIds );
+}
+
+function handleNewCanvasGadget( gadgetUrl,shindigUrl) {
+  gCanvasGadget = gadgets.container.createGadget( {'specUrl': gadgetUrl} );
+  gCanvasGadget.setServerBase(shindigUrl);
+  gCanvasGadget.width=380;
+  gCanvasGadget.height=300;
+  gadgets.container.addGadget( gCanvasGadget );
+  gadgets.container.layoutManager.setGadgetChromeIds( gChromeIds );
+}
+
+function View(){
+handleGadgetInMode('canvas');
+}
+
+function confirmDelete()
+{
+    return confirm("Are you sure you wish to delete this gadget?");
+}
+
+function handleGadgetInMode( mode,uri,gViewerId,gOwnerId,shindigUrl ) {
+  var currGadget = null;
+  
+  //if (document.forms[ "profileViewGadgetForm" ].elements[ "selectGadget" ].selectedIndex == -1) {
+   //nothing has been selected yet!
+   //return ; 
+ // }
+   var gadgetUrl = gServerBaseURL + uri;
+   gadgets.DemoAppGadget.prototype.gadget_url = gadgetUrl; //document.forms[ "profileViewGadgetForm" ].elements[ "selectGadget" ].value;
+   gadgets.DemoAppGadget.prototype.user="";
+   
+   if( mode == "profile" ) {
+	gadgets.DemoAppGadget.prototype.viewMode = 1;
+    if( gProfileGadget === null ) handleNewProfileGadget( gadgetUrl,shindigUrl );
+    currGadget = gProfileGadget;
+  } else if( mode == "canvas" ) {
+	gadgets.DemoAppGadget.prototype.viewMode = 0;
+    if( gCanvasGadget === null ) handleNewCanvasGadget( gadgetUrl,shindigUrl );
+    currGadget = gCanvasGadget;
+    
+    var profileDetailsDiv=document.getElementById("profileDetails");
+    profileDetailsDiv.style.display = "none";
+  }
+   
+  currGadget.specUrl = gadgetUrl;
+  currGadget.secureToken = escape(generateSecureToken( currGadget, mode,gViewerId,gOwnerId ));
+  
+  gadgets.container.setView( mode );
+  gadgets.container.renderGadget( currGadget );
+ }
+
+function initProfileGadget( ) {
+  handleGadgetInMode("profile");
+  
+}
+  
+gadgets.util.registerOnLoadHandler(initProfileGadget);
+</script>
+</head><body class="ContentCanvas">
+			
+<div id="profileDetails" style="">
+</div>
+
+		
+		<div class="profileView">
+	<div id="gadget-profile-chrome" class="gadgets-gadget-chrome"></div>
+</div></td>
+
+	  <div class="canvasView">
+	<div id="gadget-canvas-chrome" class="gadgets-gadget-chrome"></div>
+</div>
+	
+</body></html>
